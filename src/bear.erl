@@ -41,7 +41,7 @@
 
 -compile([native]).
 
-get_statistics([_,_,_,_,_|_] = Values) ->
+get_statistics([_,_|_] = Values) ->
     Scan_res = scan_values(Values),
     Scan_res2 = scan_values2(Values, Scan_res),
     Variance = variance(Scan_res, Scan_res2),
@@ -70,7 +70,32 @@ get_statistics([_,_,_,_,_|_] = Values) ->
      {histogram, get_histogram(Values, Scan_res, Scan_res2)},
      {n, Scan_res#scan_result.n}
     ];
-get_statistics(Values) when is_list(Values) ->
+get_statistics([V]) ->
+    [
+     {min, V},
+     {max, V},
+     {arithmetic_mean, V},
+     {geometric_mean, V},
+     {harmonic_mean, V},
+     {median, V},
+     {variance, 0.0},
+     {standard_deviation, 0.0},
+     {skewness, 0.0},
+     {kurtosis, 0.0},
+     {percentile,
+      [
+       {50, V},
+       {75, V},
+       {90, V},
+       {95, V},
+       {99, V},
+       {999, V}
+      ]
+     },
+     {histogram, [{V, 1}]},
+     {n, 1}
+    ];
+get_statistics([]) ->
     [
      {min, 0.0},
      {max, 0.0},
